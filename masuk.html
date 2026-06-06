@@ -33,15 +33,80 @@ placeholder="Password"
 required>
 </div>
 
-<button class="btn btn-success w-100">
-Masuk
+<button type="button" onclick="loginAccount()">
+Masuk Sekarang
 </button>
 
-</form>
+<br><br>
+
+<a href="reset-password.html">Lupa Password?</a>
+
+<p id="msg"></p>
 
 </div>
 
-<script type="module" src="js/auth.js"></script>
+<script src="firebase.js"></script>
+
+<script>
+function loginAccount() {
+
+const email = document.getElementById("email").value;
+const password = document.getElementById("password").value;
+
+if(!email || !password){
+alert('Email dan password wajib diisi');
+return;
+}
+
+auth.signInWithEmailAndPassword(email, password)
+.then((userCredential) => {
+
+const user = userCredential.user;
+
+db.ref('users/' + user.uid).once('value')
+.then((snapshot)=>{
+
+if(snapshot.exists()){
+
+const data = snapshot.val();
+
+if(data.role === 'admin'){
+
+alert('Login admin berhasil');
+window.location.href = 'admin-dashboard.html';
+
+}else{
+
+alert('Login user berhasil');
+window.location.href = 'user-dashboard.html';
+
+}
+
+}else{
+
+alert('Data akun tidak ditemukan');
+auth.signOut();
+
+}
+
+});
+
+})
+.catch((error) => {
+
+if (error.code === "auth/user-not-found") {
+alert("User tidak ditemukan");
+
+} else if (error.code === "auth/wrong-password") {
+alert("Password salah");
+
+} else {
+alert(error.message);
+}
+
+});
+}
+</script>
 
 </body>
 </html>
