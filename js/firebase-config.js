@@ -13,11 +13,11 @@ const firebaseConfig = {
   appId: "1:349404045321:web:6d5b49cd1897d4e51418d8"
 };
 
-// Inisialisasi Aplikasi Firebase
 const app = initializeApp(firebaseConfig);
 
-// Ekspor layanan Firebase agar bisa di-import oleh file js lainnya
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 export default app;
+
+console.log("Firebase berhasil diinisialisasi");

@@ -1,72 +1,126 @@
 // firebase/auth.js
+
 import { auth, db } from "./firebase-config.js";
-import { 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
-    signOut 
-} from "https://gstatic.com";
-import { doc, setDoc, getDoc } from "https://gstatic.com";
+
+import {
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    signOut
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+
+import {
+    doc,
+    setDoc,
+    getDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 // ==========================================
-// 1. LOGIKA UTAMA (FUNGSI ASINKRON)
+// 1. FUNGSI REGISTER
 // ==========================================
 
-export async function registerUser(email, password, fullName = "Pelanggan", role = "customer") {
+export async function registerUser(
+    email,
+    password,
+    fullName = "Pelanggan",
+    role = "customer"
+) {
     try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
         const user = userCredential.user;
 
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
-            fullName: fullName,
-            email: email,
-            role: role, 
-            createdAt: new Date().toISOString()
+            fullName,
+            email,
+            role,
+            createdAt: serverTimestamp()
         });
 
-        return { success: true, user };
+        return {
+            success: true,
+            user
+        };
+
     } catch (error) {
-        return { success: false, message: error.message };
+        return {
+            success: false,
+            message: error.message
+        };
     }
 }
+
+// ==========================================
+// 2. FUNGSI LOGIN
+// ==========================================
 
 export async function loginUser(email, password) {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
         const user = userCredential.user;
 
-        const userDoc = await getDoc(doc(db, "users", user.uid));
-        if (userDoc.exists()) {
-            return { success: true, user, role: userDoc.data().role };
-        } else {
-            throw new Error("Data pengguna tidak ditemukan di database.");
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+
+        if (!userDoc.exists()) {
+            throw new Error("Data pengguna tidak ditemukan.");
         }
+
+        const userData = userDoc.data();
+
+        return {
+            success: true,
+            user,
+            role: userData.role || "customer"
+        };
+
     } catch (error) {
-        return { success: false, message: error.message };
+        return {
+            success: false,
+            message: error.message
+        };
     }
 }
+
+// ==========================================
+// 3. FUNGSI LOGOUT
+// ==========================================
 
 export async function logoutUser() {
     try {
         await signOut(auth);
-        window.location.href = "masuk.html";
+        window.location.href = "login.html";
     } catch (error) {
-        console.error("Logout gagal:", error);
+        console.error(error);
         alert("Logout gagal: " + error.message);
     }
 }
 
 // ==========================================
-// 2. ISOLASI EVENT HANDLER (PENCEGAH EROR)
+// 4. FORM REGISTER
 // ==========================================
 
-// Hanya berjalan jika dibuka di halaman daftar.html
 const registerForm = document.getElementById("registerForm");
+
 if (registerForm) {
+
     registerForm.addEventListener("submit", async (e) => {
+
         e.preventDefault();
-        const submitBtn = registerForm.querySelector("button[type='submit']");
-        
+
+        const submitBtn =
+            registerForm.querySelector("button[type='submit']");
+
         const emailEl = document.getElementById("email");
         const passwordEl = document.getElementById("password");
 
@@ -75,53 +129,110 @@ if (registerForm) {
         const email = emailEl.value.trim();
         const password = passwordEl.value;
 
+        if (password.length < 6) {
+            alert("Password minimal 6 karakter.");
+            return;
+        }
+
         try {
-            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "⏳ Mendaftarkan..."; }
-            const result = await registerUser(email, password, "Pelanggan Baru", "customer");
-            if (result.success) {
-                alert("🎉 Pendaftaran berhasil! Silakan masuk.");
-                window.location.href = "masuk.html";
-            } else {
-                alert("❌ Pendaftaran Gagal: " + result.message);
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = "⏳ Mendaftarkan...";
             }
+
+            const result = await registerUser(
+                email,
+                password,
+                "Pelanggan Baru",
+                "customer"
+            );
+
+            if (result.success) {
+
+                alert("🎉 Pendaftaran berhasil!");
+
+                window.location.href = "login.html";
+
+            } else {
+
+                alert("❌ " + result.message);
+
+            }
+
         } finally {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Daftar Akun"; }
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Daftar Akun";
+            }
+
         }
     });
 }
 
-// Hanya berjalan jika dibuka di halaman masuk.html
+// ==========================================
+// 5. FORM LOGIN
+// ==========================================
+
 const loginForm = document.getElementById("loginForm");
+
 if (loginForm) {
+
     loginForm.addEventListener("submit", async (e) => {
+
         e.preventDefault();
-        const submitBtn = loginForm.querySelector("button[type='submit']");
-        
+
+        const submitBtn =
+            loginForm.querySelector("button[type='submit']");
+
         const emailEl = document.getElementById("email");
         const passwordEl = document.getElementById("password");
 
-        // Perbaikan: Mencegah pembacaan value sebelum elemen dipastikan eksis di halaman aktif
         if (!emailEl || !passwordEl) return;
 
         const email = emailEl.value.trim();
         const password = passwordEl.value;
 
         try {
-            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "⏳ Memeriksa Akun..."; }
-            const result = await loginUser(email, password);
-            
-            if (result.success) {
-                alert("👋 Berhasil Masuk!");
-                if (result.role === "admin") {
-                    window.location.href = "admin-panel.html";
-                } else {
-                    window.location.href = "dashboard-user.html";
-                }
-            } else {
-                alert("❌ Gagal Masuk: " + result.message);
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = "⏳ Memeriksa Akun...";
             }
+
+            const result = await loginUser(
+                email,
+                password
+            );
+
+            if (result.success) {
+
+                if (result.role === "admin") {
+
+                    window.location.href =
+                        "admin-panel.html";
+
+                } else {
+
+                    window.location.href =
+                        "dashboard-user.html";
+
+                }
+
+            } else {
+
+                alert("❌ " + result.message);
+
+            }
+
         } finally {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Masuk Sekarang"; }
+
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Masuk Sekarang";
+            }
+
         }
     });
 }
