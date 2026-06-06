@@ -1,22 +1,37 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wishlist</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Wishlist Saya</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container mt-4">
+<div class="container mt-5" style="max-width: 1000px;">
+    <!-- Bagian Kepala Halaman & Navigasi -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">⭐ Wishlist Saya</h2>
+        <a href="dashboard-user.html" class="btn btn-outline-secondary btn-sm">
+            ⬅️ Kembali ke Dashboard
+        </a>
+    </div>
 
-<h2>❤️ Wishlist Saya</h2>
-
-<div class="row" id="wishlist-container"></div>
-
+    <!-- Wadah Tempat Produk Favorit Dimuat secara Dinamis -->
+    <div id="wishlist-container" class="row g-4">
+        <!-- Item produk favorit akan disisipkan otomatis oleh js/wishlist.js -->
+        <!-- Contoh tampilan awal ketika memuat atau kosong -->
+        <div class="col-100 text-center text-muted py-5 card border-0 shadow-sm mx-3">
+            <p class="mb-2">Belum ada produk di dalam wishlist Anda.</p>
+            <div class="mt-2">
+                <a href="index.html" class="btn btn-primary btn-sm">Cari Produk Keren</a>
+            </div>
+        </div>
+    </div>
 </div>
 
+<!-- JavaScript Modul Wishlist (Diubah dari js/review.js) -->
 <script type="module" src="js/wishlist.js"></script>
 
 </body>

@@ -1,24 +1,34 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Riwayat Pesanan</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Riwayat Pesanan</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body class="bg-light">
 
-<body>
+<div class="container mt-5" style="max-width: 800px;">
+    <!-- Bagian Kepala Halaman & Navigasi -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">📋 Riwayat Pesanan</h2>
+        <a href="index.html" class="btn btn-outline-secondary btn-sm">
+            🏠 Kembali ke Toko
+        </a>
+    </div>
 
-<div class="container mt-4">
-
-<h2>Riwayat Pesanan</h2>
-
-<div id="orders"></div>
-
+    <!-- Wadah Tempat Pesanan Dimuat secara Dinamis -->
+    <div id="orders" class="d-flex flex-column gap-3">
+        <!-- Item riwayat pesanan akan disisipkan otomatis oleh js/order-history.js -->
+        <!-- Contoh tampilan awal ketika memuat atau kosong bisa diatur dari script -->
+        <div class="text-center text-muted py-5 card border-0 shadow-sm">
+            <p class="mb-0">Sedang memuat data pesanan Anda...</p>
+        </div>
+    </div>
 </div>
 
+<!-- JavaScript Modul Riwayat Pesanan -->
 <script type="module" src="js/order-history.js"></script>
 
 </body>

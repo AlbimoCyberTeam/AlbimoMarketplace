@@ -1,52 +1,62 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-
-<title>Ulasan Produk</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ulasan Produk</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body class="bg-light">
 
-<body>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 500px; border-radius: 10px;">
+        
+        <h2 class="mb-2 text-center">✍️ Berikan Ulasan</h2>
+        <p class="text-muted small text-center mb-4">Bagikan pengalaman belanja Anda untuk membantu pembeli lain.</p>
 
-<div class="container mt-4">
+        <form id="reviewForm">
+            <!-- Input Nama (Wajib Diisi) -->
+            <div class="mb-3">
+                <label for="nama" class="form-label small text-muted fw-medium">Nama Anda</label>
+                <input type="text" id="nama" class="form-control" placeholder="Masukkan nama panggilan Anda" required>
+            </div>
 
-<h2>Berikan Ulasan</h2>
+            <!-- Pilihan Rating Bintang (Menggunakan form-select) -->
+            <div class="mb-3">
+                <label for="rating" class="form-label small text-muted fw-medium">Penilaian Produk</label>
+                <select id="rating" class="form-select" required>
+                    <option value="5" selected>⭐⭐⭐⭐⭐ (Sangat Puas)</option>
+                    <option value="4">⭐⭐⭐⭐ (Puas)</option>
+                    <option value="3">⭐⭐⭐ (Cukup)</option>
+                    <option value="2">⭐⭐ (Kurang)</option>
+                    <option value="1">⭐ (Sangat Kecewa)</option>
+                </select>
+            </div>
 
-<form id="reviewForm">
+            <!-- Input Komentar (Wajib Diisi) -->
+            <div class="mb-3">
+                <label for="komentar" class="form-label small text-muted fw-medium">Ulasan Tertulis</label>
+                <textarea id="komentar" class="form-control" rows="4" placeholder="Tuliskan pendapat Anda mengenai kualitas produk atau pelayanan kami..." required></textarea>
+            </div>
 
-<input
-type="text"
-id="nama"
-class="form-control mb-3"
-placeholder="Nama">
+            <!-- Tombol Aksi (Eksplisit type="submit") -->
+            <div class="d-grid mt-4">
+                <button type="submit" class="btn btn-primary py-2 fs-6">
+                    🚀 Kirim Ulasan Sekarang
+                </button>
+            </div>
+        </form>
 
-<select
-id="rating"
-class="form-control mb-3">
+        <!-- Tautan Kembali Belanja -->
+        <div class="text-center mt-3 small">
+            <a href="index.html" class="text-decoration-none text-secondary">⬅️ Kembali ke Toko</a>
+        </div>
 
-<option value="5">⭐⭐⭐⭐⭐</option>
-<option value="4">⭐⭐⭐⭐</option>
-<option value="3">⭐⭐⭐</option>
-<option value="2">⭐⭐</option>
-<option value="1">⭐</option>
-
-</select>
-
-<textarea
-id="komentar"
-class="form-control mb-3"></textarea>
-
-<button class="btn btn-primary">
-Kirim Ulasan
-</button>
-
-</form>
-
+    </div>
 </div>
 
+<!-- JavaScript Modul Ulasan -->
 <script type="module" src="js/review.js"></script>
 
 </body>

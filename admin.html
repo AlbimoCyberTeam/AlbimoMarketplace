@@ -1,55 +1,45 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Upload Produk</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Upload Produk</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
 
-<div class="container mt-5">
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="mb-4">Upload Produk</h2>
 
-<h2>Upload Produk</h2>
+    <form id="productForm">
+        <!-- Input Nama Produk -->
+        <div class="mb-3">
+            <input type="text" id="nama" class="form-control" placeholder="Nama Produk" required>
+        </div>
 
-<form id="productForm">
+        <!-- Input Harga -->
+        <div class="mb-3">
+            <input type="number" id="harga" class="form-control" placeholder="Harga Produk" required>
+        </div>
 
-<input
-type="text"
-id="nama"
-class="form-control mb-3"
-placeholder="Nama Produk"
-required>
+        <!-- Input Deskripsi -->
+        <div class="mb-3">
+            <textarea id="deskripsi" class="form-control" placeholder="Deskripsi Produk" rows="4"></textarea>
+        </div>
 
-<input
-type="number"
-id="harga"
-class="form-control mb-3"
-placeholder="Harga"
-required>
+        <!-- Input File Gambar (Hanya menerima file gambar) -->
+        <div class="mb-3">
+            <label for="gambar" class="form-label text-muted small">Pilih Foto Produk</label>
+            <input type="file" id="gambar" class="form-control" accept="image/*" required>
+        </div>
 
-<textarea
-id="deskripsi"
-class="form-control mb-3"
-placeholder="Deskripsi"></textarea>
-
-<input
-type="file"
-id="gambar"
-class="form-control mb-3"
-required>
-
-<button class="btn btn-primary">
-Upload Produk
-</button>
-
-</form>
-
+        <!-- Tombol Submit -->
+        <button type="submit" class="btn btn-primary w-100">Upload Produk</button>
+    </form>
 </div>
 
+<!-- JavaScript Modul Admin -->
 <script type="module" src="js/admin.js"></script>
 
 </body>

@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard User</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard User</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container mt-5">
+<div class="container mt-5" style="max-width: 600px;">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-2">Dashboard Pengguna</h2>
+        <!-- Menambahkan ID pada nama agar bisa diubah dinamis oleh JavaScript -->
+        <p class="text-muted mb-4">
+            Selamat datang kembali, <strong id="userName" class="text-dark">Pelanggan</strong> di Marketplace Store.
+        </p>
 
-<h2>Dashboard User</h2>
-
-<p>Selamat datang di Marketplace Store.</p>
-
-<a href="index.html" class="btn btn-primary">
-Lihat Produk
-</a>
-
-<a href="pesanan.html" class="btn btn-success">
-Pesanan Saya
-</a>
-
-<a href="wishlist.html" class="btn btn-warning">
-Wishlist
-</a>
-
+        <!-- Grup Navigasi Menu User -->
+        <div class="d-grid gap-3">
+            <a href="index.html" class="btn btn-primary py-2">
+                🛒 Mulai Belanja / Lihat Produk
+            </a>
+            
+            <a href="pesanan.html" class="btn btn-success py-2">
+                📦 Riwayat Pesanan Saya
+            </a>
+            
+            <a href="wishlist.html" class="btn btn-warning py-2 text-white">
+                ⭐ Produk Favorit / Wishlist
+            </a>
+            
+            <!-- Tombol Keluar Akun -->
+            <button id="logoutBtn" class="btn btn-outline-danger py-2 mt-2">
+                🚪 Keluar dari Akun
+            </button>
+        </div>
+    </div>
 </div>
+
+<!-- JavaScript Modul Dashboard User -->
+<script type="module" src="js/dashboard-user.js"></script>
 
 </body>
 </html>
