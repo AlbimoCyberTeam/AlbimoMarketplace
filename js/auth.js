@@ -120,19 +120,15 @@ if (loginForm) {
         const userData =
         userDoc.data();
 
-        if (
-          userData.role === "admin"
-        ) {
+        if (userData.role === "admin") {
 
-          window.location.href =
-          "admin-panel.html";
+    window.location.href = "admin-panel.html";
 
-        } else {
+} else {
 
-          window.location.href =
-          "index.html";
+    window.location.href = "dashboard-user.html";
 
-        }
+}
 
       } catch (error) {
 
