@@ -1,5 +1,5 @@
 // firebase/auth.js
-import { auth, db } from "./config.js";
+import { auth, db } from "js/firebase-config.js";
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
@@ -49,7 +49,7 @@ export async function loginUser(email, password) {
 export async function logoutUser() {
     try {
         await signOut(auth);
-        window.location.href = "../login.html";
+        window.location.href = "masuk.html";
     } catch (error) {
         console.error("Logout gagal:", error);
         alert("Logout gagal: " + error.message);
