@@ -1,4 +1,4 @@
-import { auth } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 
 import {
   createUserWithEmailAndPassword,
@@ -6,46 +6,157 @@ import {
   signOut
 } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 
-const registerForm = document.getElementById("registerForm");
+import {
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+/* =========================
+   REGISTER
+========================= */
+
+const registerForm =
+document.getElementById("registerForm");
 
 if (registerForm) {
-  registerForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  registerForm.addEventListener(
+    "submit",
+    async (e) => {
 
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      alert("Pendaftaran berhasil");
-      location.href = "masuk.html";
-    } catch (error) {
-      alert(error.message);
+      e.preventDefault();
+
+      const email =
+      document.getElementById("email").value;
+
+      const password =
+      document.getElementById("password").value;
+
+      try {
+
+        const userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        await setDoc(
+          doc(
+            db,
+            "users",
+            userCredential.user.uid
+          ),
+          {
+            email,
+            role: "user",
+            createdAt: new Date()
+          }
+        );
+
+        alert("Pendaftaran berhasil");
+
+        window.location.href =
+        "masuk.html";
+
+      } catch (error) {
+
+        alert(error.message);
+
+      }
+
     }
-  });
+  );
+
 }
 
-const loginForm = document.getElementById("loginForm");
+/* =========================
+   LOGIN
+========================= */
+
+const loginForm =
+document.getElementById("loginForm");
 
 if (loginForm) {
-  loginForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+  loginForm.addEventListener(
+    "submit",
+    async (e) => {
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login berhasil");
-      location.href = "index.html";
-    } catch (error) {
-      alert(error.message);
+      e.preventDefault();
+
+      const email =
+      document.getElementById("email").value;
+
+      const password =
+      document.getElementById("password").value;
+
+      try {
+
+        const userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const uid =
+        userCredential.user.uid;
+
+        const userDoc =
+        await getDoc(
+          doc(db, "users", uid)
+        );
+
+        if (!userDoc.exists()) {
+
+          alert("Data user tidak ditemukan");
+
+          return;
+
+        }
+
+        const userData =
+        userDoc.data();
+
+        if (
+          userData.role === "admin"
+        ) {
+
+          window.location.href =
+          "admin-panel.html";
+
+        } else {
+
+          window.location.href =
+          "index.html";
+
+        }
+
+      } catch (error) {
+
+        alert(error.message);
+
+      }
+
     }
-  });
+  );
+
 }
 
-window.logoutUser = async function () {
+/* =========================
+   LOGOUT
+========================= */
+
+window.logoutUser =
+async function () {
+
   await signOut(auth);
+
   alert("Logout berhasil");
-  location.reload();
+
+  window.location.href =
+  "masuk.html";
+
 };
