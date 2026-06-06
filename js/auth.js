@@ -4,23 +4,21 @@ import {
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     signOut 
-} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+} from "https://gstatic.com";
+import { doc, setDoc, getDoc } from "https://gstatic.com";
 
 // ==========================================
-// KODE LOGIKA UTAMA (FUNGSI ASINKRON)
+// 1. LOGIKA UTAMA (FUNGSI ASINKRON)
 // ==========================================
 
-// 1. Registrasi Pengguna Baru
 export async function registerUser(email, password, fullName = "Pelanggan", role = "customer") {
     try {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Simpan data tambahan ke Firestore (Default role dibuat 'customer')
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
-            nama: fullName, // Menggunakan 'nama' agar senada dengan profil.html (id="nama")
+            fullName: fullName,
             email: email,
             role: role, 
             createdAt: new Date().toISOString()
@@ -32,13 +30,11 @@ export async function registerUser(email, password, fullName = "Pelanggan", role
     }
 }
 
-// 2. Login Pengguna
 export async function loginUser(email, password) {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
-        // Ambil data role dari Firestore
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
             return { success: true, user, role: userDoc.data().role };
@@ -50,7 +46,6 @@ export async function loginUser(email, password) {
     }
 }
 
-// 3. Logout Pengguna
 export async function logoutUser() {
     try {
         await signOut(auth);
@@ -62,56 +57,61 @@ export async function logoutUser() {
 }
 
 // ==========================================
-// KODE PENGIKAT EVENT (AUTOMATIC INTEGRATION)
+// 2. ISOLASI EVENT HANDLER (PENCEGAH EROR)
 // ==========================================
 
-// Eksekusi ketika file dijalankan di halaman daftar.html
+// Hanya berjalan jika dibuka di halaman daftar.html
 const registerForm = document.getElementById("registerForm");
 if (registerForm) {
     registerForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const submitBtn = registerForm.querySelector("button[type='submit']");
         
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+        const emailEl = document.getElementById("email");
+        const passwordEl = document.getElementById("password");
+
+        if (!emailEl || !passwordEl) return;
+
+        const email = emailEl.value.trim();
+        const password = passwordEl.value;
 
         try {
             if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "⏳ Mendaftarkan..."; }
-            
-            // Memanggil fungsi register (menggunakan nilai default untuk nama dan role)
             const result = await registerUser(email, password, "Pelanggan Baru", "customer");
-            
             if (result.success) {
-                alert("🎉 Pendaftaran berhasil! Silakan masuk ke akun Anda.");
+                alert("🎉 Pendaftaran berhasil! Silakan masuk.");
                 window.location.href = "masuk.html";
             } else {
                 alert("❌ Pendaftaran Gagal: " + result.message);
             }
         } finally {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Daftar"; }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Daftar Akun"; }
         }
     });
 }
 
-// Eksekusi ketika file dijalankan di halaman masuk.html
+// Hanya berjalan jika dibuka di halaman masuk.html
 const loginForm = document.getElementById("loginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const submitBtn = loginForm.querySelector("button[type='submit']");
         
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+        const emailEl = document.getElementById("email");
+        const passwordEl = document.getElementById("password");
+
+        // Perbaikan: Mencegah pembacaan value sebelum elemen dipastikan eksis di halaman aktif
+        if (!emailEl || !passwordEl) return;
+
+        const email = emailEl.value.trim();
+        const password = passwordEl.value;
 
         try {
             if (submitBtn) { submitBtn.disabled = true; submitBtn.innerText = "⏳ Memeriksa Akun..."; }
-            
             const result = await loginUser(email, password);
             
             if (result.success) {
                 alert("👋 Berhasil Masuk!");
-                
-                // Menangani pengalihan halaman berdasarkan hak akses (Role)
                 if (result.role === "admin") {
                     window.location.href = "admin-panel.html";
                 } else {
@@ -121,7 +121,7 @@ if (loginForm) {
                 alert("❌ Gagal Masuk: " + result.message);
             }
         } finally {
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Masuk"; }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerText = "Masuk Sekarang"; }
         }
     });
 }
