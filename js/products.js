@@ -30,6 +30,17 @@ if (wadah) {
             <button class="btn btn-primary">
               Beli Sekarang
             </button>
+            
+            <button
+class="btn btn-primary"
+onclick='addToCart(${JSON.stringify(produk)})'>
+Tambah Keranjang
+</button>
+
+const script = document.createElement("script");
+script.src = "js/cart.js";
+document.body.appendChild(script);
+            
           </div>
         </div>
       </div>
