@@ -1,8 +1,8 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
+// Konfigurasi resmi proyek Firebase Anda (albimo-shopee)
 const firebaseConfig = {
   apiKey: "AIzaSyB39WPXW-vV25QQiUB5Fkk9di4cUVfpCjo",
   authDomain: "albimo-shopee.firebaseapp.com",
@@ -13,7 +13,11 @@ const firebaseConfig = {
   appId: "1:349404045321:web:6d5b49cd1897d4e51418d8"
 };
 
+// Inisialisasi Aplikasi Firebase
 const app = initializeApp(firebaseConfig);
+
+// Ekspor layanan Firebase agar bisa di-import oleh file js lainnya
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
 export default app;
