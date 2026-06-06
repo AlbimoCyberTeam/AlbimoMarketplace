@@ -1,5 +1,4 @@
 // firebase/auth.js
-
 import { auth, db } from "./firebase-config.js";
 
 import {
@@ -99,7 +98,7 @@ export async function loginUser(email, password) {
 export async function logoutUser() {
     try {
         await signOut(auth);
-        window.location.href = "login.html";
+        window.location.href = "masuk.html";
     } catch (error) {
         console.error(error);
         alert("Logout gagal: " + error.message);
@@ -152,7 +151,7 @@ if (registerForm) {
 
                 alert("🎉 Pendaftaran berhasil!");
 
-                window.location.href = "login.html";
+                window.location.href = "masuk.html";
 
             } else {
 
