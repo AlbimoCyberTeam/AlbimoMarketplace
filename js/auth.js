@@ -1,158 +1,57 @@
-import { auth, db } from "./firebase-config.js";
+// firebase/auth.js
+import { auth, db } from "./config.js";
+import { 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut
-} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+// 1. Registrasi Pengguna Baru (Customer atau Seller)
+export async function registerUser(email, password, fullName, role) {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-import {
-  doc,
-  setDoc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+        // Simpan data tambahan dan ROLE ke Firestore
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            fullName: fullName,
+            email: email,
+            role: role, // 'customer' atau 'seller' (admin dibuat manual)
+            createdAt: new Date().toISOString()
+        });
 
-/* =========================
-   REGISTER
-========================= */
-
-const registerForm =
-document.getElementById("registerForm");
-
-if (registerForm) {
-
-  registerForm.addEventListener(
-    "submit",
-    async (e) => {
-
-      e.preventDefault();
-
-      const email =
-      document.getElementById("email").value;
-
-      const password =
-      document.getElementById("password").value;
-
-      try {
-
-        const userCredential =
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        await setDoc(
-          doc(
-            db,
-            "users",
-            userCredential.user.uid
-          ),
-          {
-            email,
-            role: "user",
-            createdAt: new Date()
-          }
-        );
-
-        alert("Pendaftaran berhasil");
-
-        window.location.href =
-        "masuk.html";
-
-      } catch (error) {
-
-        alert(error.message);
-
-      }
-
+        return { success: true, user };
+    } catch (error) {
+        return { success: false, message: error.message };
     }
-  );
-
 }
 
-/* =========================
-   LOGIN
-========================= */
+// 2. Login Pengguna
+export async function loginUser(email, password) {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-const loginForm =
-document.getElementById("loginForm");
-
-if (loginForm) {
-
-  loginForm.addEventListener(
-    "submit",
-    async (e) => {
-
-      e.preventDefault();
-
-      const email =
-      document.getElementById("email").value;
-
-      const password =
-      document.getElementById("password").value;
-
-      try {
-
-        const userCredential =
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-        const uid =
-        userCredential.user.uid;
-
-        const userDoc =
-        await getDoc(
-          doc(db, "users", uid)
-        );
-
-        if (!userDoc.exists()) {
-
-          alert("Data user tidak ditemukan");
-
-          return;
-
+        // Ambil data role dari Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+            return { success: true, user, role: userDoc.data().role };
+        } else {
+            throw new Error("Data pengguna tidak ditemukan di database.");
         }
-
-        const userData =
-        userDoc.data();
-
-        if (userData.role === "admin") {
-
-    window.location.href = "admin-panel.html";
-
-} else {
-
-    window.location.href = "dashboard-user.html";
-
-}
-
-      } catch (error) {
-
-        alert(error.message);
-
-      }
-
+    } catch (error) {
+        return { success: false, message: error.message };
     }
-  );
-
 }
 
-/* =========================
-   LOGOUT
-========================= */
-
-window.logoutUser =
-async function () {
-
-  await signOut(auth);
-
-  alert("Logout berhasil");
-
-  window.location.href =
-  "masuk.html";
-
-};
+export async function logoutUser() {
+    try {
+        await signOut(auth);
+        window.location.href = "../login.html";
+    } catch (error) {
+        console.error("Logout gagal:", error);
+        alert("Logout gagal: " + error.message);
+    }
+}
