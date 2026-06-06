@@ -11,7 +11,7 @@ from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 const form =
 document.getElementById("paymentForm");
 
-form.addEventListener("submit",
+if (form) form.addEventListener("submit",
 async(e)=>{
 
 e.preventDefault();

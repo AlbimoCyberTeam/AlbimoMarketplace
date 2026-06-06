@@ -1,11 +1,11 @@
 // firebase/auth.js
-import { auth, db } from "js/firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import { 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword, 
     signOut 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
 
 // 1. Registrasi Pengguna Baru (Customer atau Seller)
 export async function registerUser(email, password, fullName, role) {
